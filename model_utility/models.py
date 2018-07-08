@@ -7,10 +7,8 @@ from keras.layers.normalization import BatchNormalization
 
 
 class ModelInit(object):
-    def __init__(self, image_width, image_height, bands, classes):
-        self.image_width = image_width
-        self.image_height = image_height
-        self.bands = bands
+    def __init__(self, image_dimension, classes):
+        self.image_width, self.image_height, self.bands = image_dimension
         self.classes = classes
 
     def unet(self):

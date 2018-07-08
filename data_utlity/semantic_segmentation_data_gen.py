@@ -69,8 +69,10 @@ class DataGenerator(object):
         self.read_me = {}
         self.height, self.width, self.bands = config.model_input_dimension
         if config.multi_label:
-            self.class_for_trainig = utils.create_feature_dict(config.features, config.color_code,
-                                                               config.num_of_multi_label_classes)
+            self.class_for_training = utils.create_feature_dict(config.features, config.color_code,
+                                                                config.num_of_multi_label_classes)
+        else:
+            self.class_for_training = {}
 
         if using_val_generator:
             self._populate_val_set()
@@ -160,7 +162,7 @@ class DataGenerator(object):
 
         :return:
         """
-        return self.total_samples / self.config.train_batch_size
+        return self.total_samples / self.config.batch_size
 
     @threadsafe_generator
     def generate(self):
@@ -178,10 +180,10 @@ class DataGenerator(object):
             if self.using_val_generator is False:
                 random.shuffle(self.test_images_file_names)
 
-            for i in range(0, self.config.train_batch_size):
+            for i in range(0, self.config.batch_size):
 
                 folder_name = self.dir_structure[self.initial_index]
-                if len(self.dir_structure_dict[folder_name][0]) < self.config.train_batch_size:
+                if len(self.dir_structure_dict[folder_name][0]) < self.config.batch_size:
                     self.dir_structure_dict[folder_name][0] = self.dir_structure_dict_copy[folder_name][0].copy()
                 file_name = self.dir_structure_dict[folder_name][0][0]
 
@@ -201,14 +203,14 @@ class DataGenerator(object):
                 if self.config.augment and not self.using_val_generator:
                     if self.config.augment_frequency % random.randint(1, 10) == 0:
                         image, label = data_aug.random_augmentation(image, label, self.config.augmentation,
-                                                                    config.augmentation_type)
+                                                                    self.config.augmentation_type)
 
                 label = preprocessing.perform_preprocessing_label(label, file_name,
                                                                   image_dimension=label.shape,
                                                                   num_of_multi_label_classes=
                                                                   self.config.num_of_multi_label_classes,
                                                                   Multi_label=self.config.multi_label,
-                                                                  training_classes=self.class_for_trainig)
+                                                                  training_classes=self.class_for_training)
 
                 image = preprocessing.perform_normalization(image, self.config.normalization)
 
@@ -228,8 +230,8 @@ class DataGenerator(object):
 
             if self.config.multi_label:
                 try:
-                    return np.array(images).reshape(self.config.train_batch_size, self.height, self.width, self.bands), np.array(labels). \
-                              reshape(self.config.train_batch_size, self.height, self.width,
+                    yield np.array(images).reshape(self.config.batch_size, self.height, self.width, self.bands), np.array(labels). \
+                              reshape(self.config.batch_size, self.height, self.width,
                                       self.config.number_multilabel_classes)
                 except ValueError as ex:
                     print(ex)
@@ -238,8 +240,8 @@ class DataGenerator(object):
                     raise SystemExit
             else:
                 try:
-                    return np.array(images).reshape(self.config.train_batch_size, self.height, self.width, self.bands), \
-                          np.array(labels).reshape(self.config.train_batch_size, self.height, self.width, 1)
+                    yield np.array(images).reshape(self.config.batch_size, self.height, self.width, self.bands), \
+                          np.array(labels).reshape(self.config.batch_size, self.height, self.width, 1)
                 except ValueError as ex:
                     print(ex)
                     print("Exception occured in Data-Generator while trying to return ")
@@ -247,11 +249,3 @@ class DataGenerator(object):
                     raise SystemExit
 
 
-from config import Config
-from utility.getter_setter import set_calculate_over_dataset
-set_calculate_over_dataset(True)
-config = Config()
-data_gen_train = DataGenerator(config=config, images_path=config.train_images_dir,
-                               labels_path=config.train_labels_dir,
-                               shuffle=True, using_val_generator=False)
-data_gen_train.generate()

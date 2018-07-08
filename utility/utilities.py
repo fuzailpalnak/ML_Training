@@ -9,7 +9,7 @@ from os import remove
 def random_crop(img, label, random_crop_size):
     # Note: image_data_format is 'channel_last'
     height, width = img.shape[0], img.shape[1]
-    dy, dx = random_crop_size
+    dy, dx = random_crop_size[0], random_crop_size[1]
     x = np.random.randint(0, width - dx + 1)
     y = np.random.randint(0, height - dy + 1)
 

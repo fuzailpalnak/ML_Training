@@ -1,6 +1,6 @@
 from model_utility.models import ModelInit
 from model_utility import loss_function
-import utility.metrics as metric
+import model_utility.metrics as metric
 from data_utlity.semantic_segmentation_data_gen import DataGenerator
 
 
@@ -9,8 +9,8 @@ from keras import optimizers
 from tensorflow.python.client import device_lib
 
 
-def configure_training(model_name, optimizer_to_use, loss_to_use, **kwargs):
-    model_init = ModelInit(256, 256, 3, 2)
+def configure_training(model_name, optimizer_to_use, loss_to_use, image_dimension, classes, **kwargs):
+    model_init = ModelInit(image_dimension, classes)
     model = getattr(model_init, model_name)()
 
     optimizer = getattr(optimizers, optimizer_to_use)
@@ -39,11 +39,12 @@ def get_available_gpus_count():
 
 
 def configure_data_gen(config):
-    data_gen_train = DataGenerator(config=config, images_path=config.train_images_path,
-                                   labels_path=config.train_labels_path,
+    data_gen_train = DataGenerator(config=config, images_path=config.train_images_dir,
+                                   labels_path=config.train_labels_dir,
                                    shuffle=True, using_val_generator=False)
 
-    data_gen_val = DataGenerator(config=config, images_path=config.val_images_path,
-                                 labels_path=config.val_labels_path,
+    data_gen_val = DataGenerator(config=config, images_path=config.val_images_dir,
+                                 labels_path=config.val_labels_dir,
                                  shuffle=True, using_val_generator=False)
+    return data_gen_train, data_gen_val
 
