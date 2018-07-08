@@ -56,46 +56,44 @@ def translate(image, label):
     return aug.augment_image(image), aug.augment_image(label)
 
 
-def random_augmentation(image, label, augmentation_kwargs):
+def random_augmentation(image, label, augmentation, augmentation_type):
 
-    augmentation_kwargs_copy = augmentation_kwargs.copy()
-    augmentation_type = augmentation_kwargs_copy["augmentation_type"]
+    augmentation_copy = augmentation.copy()
     assert augmentation_type in ("AllOf", "OneOf", "SomeOf"), \
         "Augmentation Type should be 'OneOf', 'AllOf' or 'SomeOf'"
-    augmentation_kwargs_copy.pop("augmentation_type")
 
     if augmentation_type == "AllOf":
-        image, label = all_of(image, label, augmentation_kwargs_copy)
+        image, label = all_of(image, label, augmentation_copy)
 
     elif augmentation_type == "OneOf":
-        image, label = one_of(image, label, augmentation_kwargs_copy)
+        image, label = one_of(image, label, augmentation_copy)
 
     elif augmentation_type == "SomeOf":
-        image, label = some_of(image, label, augmentation_kwargs_copy)
+        image, label = some_of(image, label, augmentation_copy)
 
     return image, label
 
 
 def some_of(image, label, augmentation_kwargs_copy):
-    random_some = random.randint(0, len(list(augmentation_kwargs_copy.keys())) - 2)
+    random_some = random.randint(0, len(augmentation_kwargs_copy) - 2)
     for i in range(0, random_some):
-        rand = random.randint(0, len(list(augmentation_kwargs_copy.keys())) - 2)
-        key = list(augmentation_kwargs_copy.keys())[rand]
-        image, label = augmentation_kwargs_copy[key](image, label)
+        rand = random.randint(0, len(augmentation_kwargs_copy) - 2)
+        value = augmentation_kwargs_copy[rand]
+        image, label = eval(value)(image, label)
 
     return image, label
 
 
 def one_of(image, label, augmentation_kwargs_copy):
-    rand = random.randint(0, len(list(augmentation_kwargs_copy.keys())) - 2)
-    key = list(augmentation_kwargs_copy.keys())[rand]
-    image, label = augmentation_kwargs_copy[key](image, label)
+    rand = random.randint(0, len(augmentation_kwargs_copy) - 2)
+    value = augmentation_kwargs_copy[rand]
+    image, label = eval(value)(image, label)
 
     return image, label
 
 
 def all_of(image, label, augmentation_kwargs_copy):
-    for key, value in augmentation_kwargs_copy.items():
-        image, label = value(image, label)
+    for value in augmentation_kwargs_copy:
+        image, label = eval(value)(image, label)
 
     return image, label

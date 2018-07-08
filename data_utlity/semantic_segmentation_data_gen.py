@@ -195,9 +195,10 @@ class DataGenerator(object):
                                                          model_input_dimension=self.config.model_input_dimension,
                                                          input_image_dim=self.config.image_dimension)
 
-                # if self.config.preprocessing['augment'] and not self.using_val_generator:
-                #     if self.config.preprocessing['augment_frequency'] % random.randint(1, 10) == 0:
-                #         image, label = data_aug.random_augmentation(image, label, self.config.augmentation_kwargs)
+                if self.config.augment and not self.using_val_generator:
+                    if self.config.augment_frequency % random.randint(1, 2) == 0:
+                        image, label = data_aug.random_augmentation(image, label, self.config.augmentation,
+                                                                    config.augmentation_type)
 
                 label = preprocessing.perform_preprocessing_label(label, file_name,
                                                                   image_dimension=label.shape,
