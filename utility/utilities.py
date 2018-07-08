@@ -1,6 +1,9 @@
 import tifffile as tiff
-import sys
 import numpy as np
+from keras.utils import to_categorical
+import sys
+from os.path import exists
+from os import remove
 
 
 def random_crop(img, label, random_crop_size):
@@ -50,3 +53,83 @@ def get_image_label(img_path, label_path, model_input_dimension, input_image_dim
         print("{}-path to label".format(label_path))
         sys.tracebacklimit = None
         raise SystemExit
+
+
+def create_feature_dict(features, color_code_for_features, num_of_multi_label_classes):
+    """
+
+    ex-
+        input=
+        features = ["EveryThingElse", "Paved", "Unpaved"]
+        color_code_for_features = [(255,255,255), (255,0,0),(0,255,0)]
+
+        output={0:['EveryThingElse',(255,255,255),0],1:['Paved',(255,0,0),1],2:['Unpaved',(0,255,0),2]}
+
+    """
+    class_for_training = {}
+    if len(features) != num_of_multi_label_classes:
+        print("Mismatch in features and num_of_multi_label_classes")
+        return False
+
+    if len(features) != len(color_code_for_features):
+        print("Mismatch in features and color_for_features")
+        return False
+
+    for features_count, features in enumerate(features):
+        class_for_training.setdefault(features_count, [])
+        class_for_training[features_count].append(features)
+        class_for_training[features_count].append(color_code_for_features[features_count])
+        class_for_training[features_count].append(features_count)
+    return class_for_training
+
+
+def create_one_hot_code_for_each_image(img, height, width, file_name, num_of_classes, class_for_training):
+
+    """
+    https://machinelearningmastery.com/why-one-hot-encode-data-in-machine-learning/
+    https://en.wikipedia.org/wiki/One-hot
+
+
+    ex-
+        [house, car, tooth, car] becomes
+        [[1,0,0,0],
+        [0,1,0,1],
+        [0,0,1,0]]
+    """
+    if len(img.shape) == 2:
+        print("{}-File Name".format(file_name))
+        print("Found Binary image ,Image Bands should be greater than 2")
+        print("Please check input , or MultiLabel Variable might be true in config file")
+        sys.tracebacklimit = None
+        raise SystemExit
+
+    for feature_count in range(0, num_of_classes):
+        img[np.where((img == [class_for_training[feature_count][1]]).all(axis=2))] = [class_for_training[feature_count][2]]
+
+    if np.amax([img>num_of_classes]):
+        if exists("inconsistent_pixel_values.txt"):
+            remove("inconsistent_pixel_values.txt")
+        file = open("inconsistent_pixel_values.txt", 'w')
+        file.write("filename - {}".format(str(file_name))+"\n")
+
+        for x in range(0, height):
+            for y in range(0, width):
+                for count in range(0, num_of_classes):
+                    if tuple(img[x][y]) == (class_for_training[count][2], class_for_training[count][2],
+                                            class_for_training[count][2]):
+                        break
+                    else:
+                        file.write("pixel location - x= {} y={} pixel values-{}".format(str(x), str(y), str(img[x][y]))+"\n")
+        file.close()
+
+        print("{}-in file".format(file_name))
+        print("Inconsistent Pixel found please check the provided input label")
+        print("Check inconsistent_pixel_values.txt ")
+        sys.tracebacklimit = None
+        raise SystemExit
+
+    img = img[:, :, :1]
+    img_one_hot_coded = to_categorical(img, num_of_classes)
+    img_one_hot_coded = np.array(img_one_hot_coded).reshape(height, width,
+                                                            num_of_classes)
+    return img_one_hot_coded

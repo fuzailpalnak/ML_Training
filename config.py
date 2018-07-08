@@ -17,3 +17,5 @@ class Config:
         self.augmentation = ['horizontal_flip', 'vertical_flip']
         self.multi_label = False
         self.augmentation_type = 'OneOf'
+        self.features = ["Building", "Border"]
+        self.color_code_for_features = [(0, 255, 0), (255, 0, 0)]

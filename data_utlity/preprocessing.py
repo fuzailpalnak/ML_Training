@@ -4,6 +4,7 @@ from skimage import exposure, color
 
 import sys
 import utility.getter_setter as set_get_mean_std
+from utility.utilities import create_one_hot_code_for_each_image
 
 
 def mean_std_over_dataset(img_array):
@@ -98,11 +99,10 @@ def perform_binary_label_normalization(image, height, width, file_name):
     return label_image
 
 
-def perform_normalization_multi_label(image, height, width, file_name, classes):
+def perform_normalization_multi_label(image, height, width, file_name, classes, training_classes):
     try:
         try:
-            # TODO multilabel support
-            label_image = image  # create_one_hot_code_for_each_image(label_image, config, file_name)
+            label_image = create_one_hot_code_for_each_image(image, height, width, file_name, classes, training_classes)
         except Exception as ex:
             print(ex)
             print("{}-infile".format(file_name))
@@ -124,7 +124,7 @@ def perform_normalization_multi_label(image, height, width, file_name, classes):
 
 
 def perform_preprocessing_label(label_image, file_name=None, Multi_label=False, image_dimension=None,
-                                num_of_multi_label_classes=2):
+                                num_of_multi_label_classes=2, training_classes=None):
     """
 
     :param label_image: label image as numpy array
@@ -138,7 +138,7 @@ def perform_preprocessing_label(label_image, file_name=None, Multi_label=False, 
         if Multi_label:
             height, width, _ = image_dimension
             label_image = perform_normalization_multi_label(label_image, height, width, file_name,
-                                                            num_of_multi_label_classes)
+                                                            num_of_multi_label_classes, training_classes)
 
         else:
             height, width = image_dimension

@@ -68,6 +68,9 @@ class DataGenerator(object):
         self.dir_structure_dict_copy = {}
         self.read_me = {}
         self.height, self.width, self.bands = config.model_input_dimension
+        if config.multi_label:
+            self.class_for_trainig = utils.create_feature_dict(config.features, config.color_code,
+                                                               config.num_of_multi_label_classes)
 
         if using_val_generator:
             self._populate_val_set()
@@ -196,7 +199,7 @@ class DataGenerator(object):
                                                          input_image_dim=self.config.image_dimension)
 
                 if self.config.augment and not self.using_val_generator:
-                    if self.config.augment_frequency % random.randint(1, 2) == 0:
+                    if self.config.augment_frequency % random.randint(1, 10) == 0:
                         image, label = data_aug.random_augmentation(image, label, self.config.augmentation,
                                                                     config.augmentation_type)
 
@@ -204,7 +207,8 @@ class DataGenerator(object):
                                                                   image_dimension=label.shape,
                                                                   num_of_multi_label_classes=
                                                                   self.config.num_of_multi_label_classes,
-                                                                  Multi_label=self.config.multi_label)
+                                                                  Multi_label=self.config.multi_label,
+                                                                  training_classes=self.class_for_trainig)
 
                 image = preprocessing.perform_normalization(image, self.config.normalization)
 
