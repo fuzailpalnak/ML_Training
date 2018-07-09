@@ -48,7 +48,7 @@ Semantic Segmentation training Keras
 
 ### Config
 
-        model_name = ''                         # model to run form
+        model_name = ''                         # model to run
         optimizer = ''                          # optimizer to choose during model training
         loss_function = ''                      # loss for training
         train_images_dir = "train/images"       # train images dir
