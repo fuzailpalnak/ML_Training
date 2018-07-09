@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-import data_utlity.preprocessing as preprocessing
+import data_utlity.data_preprocessing as preprocessing
 import utility.getter_setter as set_get
 import utility.utilities as utils
 

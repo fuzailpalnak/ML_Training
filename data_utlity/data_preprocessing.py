@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-from skimage import exposure, color
+from skimage import color
 
 import sys
 import utility.getter_setter as set_get_mean_std

@@ -1,4 +1,3 @@
-import sys
 
 import keras
 from keras.layers import Input, MaxPooling2D, UpSampling2D, Conv2D, concatenate

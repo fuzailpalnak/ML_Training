@@ -6,7 +6,7 @@ import numpy as np
 import sys
 
 import data_utlity.data_augmentation as data_aug
-import data_utlity.preprocessing as preprocessing
+import data_utlity.data_preprocessing as preprocessing
 
 from data_utlity.logger import create_a_logger_file, get_logger_object
 import utility.getter_setter as set_get_mean_std

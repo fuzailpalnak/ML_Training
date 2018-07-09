@@ -3,11 +3,11 @@ class Config:
         self.model_name = 'unet'
         self.optimizer = 'Adam'
         self.loss_function = 'binary_crossentropy'
-        self.train_images_dir = "/home/palnak/Dataset/inria/sample_train/images"
-        self.train_labels_dir = "/home/palnak/Dataset/inria/sample_train/labels"
-        self.val_images_dir = "/home/palnak/Dataset/inria/sample_train/images"
-        self.val_labels_dir = "/home/palnak/Dataset/inria/sample_train/labels"
-        self.test_images_dir = "/home/palnak/Dataset/inria/sample_train/images"
+        self.train_images_dir = ""
+        self.train_labels_dir = ""
+        self.val_images_dir = ""
+        self.val_labels_dir = ""
+        self.test_images_dir = ""
         self.normalization = "std_dev_normalization"
         self.augment = True
         self.augment_frequency = 2

@@ -10,7 +10,7 @@ def main():
     model, optimizer, loss = configure_training(config.model_name, config.optimizer,
                                                 config.loss_function, config.model_input_dimension,
                                                 config.num_of_multi_label_classes, lr=1e-4)
-    metrics = get_metrics(['precision'])
+    metrics = get_metrics(['precision', 'recall'])
     model = compile_model(model, optimizer, loss, metrics)
     gpu_count = get_available_gpus_count()
 
