@@ -1,7 +1,6 @@
-# semantic_segmentation_training
+# ML_Training
 
-
-CNN Training Keras 
+CNN Semantic SegmentationTraining Keras 
 
 
 # Getting Started
