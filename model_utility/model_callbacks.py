@@ -99,10 +99,13 @@ def tensorboard(tboard_path):
 def get_callbacks(multi_label, training_class):
 
     log_folder = os.path.join(os.getcwd(), "logs")
-    save_images_folder = os.path.join(log_folder, "test_images_"+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
     current_running_folder = os.path.join(log_folder, datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
-    tboard_path = os.path.join(log_folder, "tboard_"+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
-    weights_path = os.path.join(log_folder, "model_weights"+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M"))
+    save_images_folder = os.path.join(current_running_folder, "test_images_"+datetime.datetime.now().
+                                      strftime("%Y_%m_%d_%H_%M"))
+    tboard_path = os.path.join(current_running_folder, "tboard_"+datetime.datetime.now().
+                               strftime("%Y_%m_%d_%H_%M"))
+    weights_path = os.path.join(current_running_folder, "model_weights"+datetime.datetime.now().
+                                strftime("%Y_%m_%d_%H_%M"))
     try:
         os.makedirs(current_running_folder)
     except OSError:

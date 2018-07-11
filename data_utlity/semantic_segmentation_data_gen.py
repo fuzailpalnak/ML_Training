@@ -228,24 +228,15 @@ class DataGenerator(object):
                 else:
                     self.initial_index = self.initial_index + 1
 
-            if self.config.multi_label:
-                try:
-                    yield np.array(images).reshape(self.config.batch_size, self.height, self.width, self.bands), np.array(labels). \
-                              reshape(self.config.batch_size, self.height, self.width,
-                                      self.config.number_multilabel_classes)
-                except ValueError as ex:
-                    print(ex)
-                    print("Exception occured in Data-Generator while trying to return")
-                    sys.tracebacklimit = None
-                    raise SystemExit
-            else:
-                try:
-                    yield np.array(images).reshape(self.config.batch_size, self.height, self.width, self.bands), \
-                          np.array(labels).reshape(self.config.batch_size, self.height, self.width, 1)
-                except ValueError as ex:
-                    print(ex)
-                    print("Exception occured in Data-Generator while trying to return ")
-                    sys.tracebacklimit = None
-                    raise SystemExit
+            try:
+                yield np.array(images).reshape(self.config.batch_size, self.height, self.width, self.bands), \
+                      np.array(labels).reshape(self.config.batch_size, self.height, self.width,
+                                               self.config.num_of_multi_label_classes)
+            except ValueError as ex:
+                print(ex)
+                print("Exception occured in Data-Generator while trying to return")
+                sys.tracebacklimit = None
+                raise SystemExit
+
 
 

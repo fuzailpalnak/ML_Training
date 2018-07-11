@@ -2,7 +2,7 @@ from utility.configure import compile_model, configure_training, get_metrics, ge
     configure_data_gen
 from utility.parallelizer import make_parallel
 from config import Config
-from model_callbacks import get_callbacks
+from model_utility.model_callbacks import get_callbacks
 
 
 def main():
@@ -10,7 +10,7 @@ def main():
     model, optimizer, loss = configure_training(config.model_name, config.optimizer,
                                                 config.loss_function, config.model_input_dimension,
                                                 config.num_of_multi_label_classes, lr=1e-4)
-    metrics = get_metrics(['precision', 'recall'])
+    metrics = get_metrics(config.metric)
     model = compile_model(model, optimizer, loss, metrics)
     gpu_count = get_available_gpus_count()
 
@@ -18,6 +18,8 @@ def main():
         model = make_parallel(model, gpu_count)
         
     model.summary()
+    if config.existing_model_weight.strip():
+        model.load_weights(config.existing_model_weight)
 
     train_data_gen, val_data_gen = configure_data_gen(config)
     train_steps_per_epoch = train_data_gen.get_steps_per_epoch()

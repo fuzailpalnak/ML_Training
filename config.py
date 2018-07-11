@@ -3,11 +3,11 @@ class Config:
         self.model_name = 'unet'
         self.optimizer = 'Adam'
         self.loss_function = 'binary_crossentropy'
-        self.train_images_dir = "/home/palnak/Dataset/inria/sample_train/images"
-        self.train_labels_dir = "/home/palnak/Dataset/inria/sample_train/labels"
-        self.val_images_dir = "/home/palnak/Dataset/inria/sample_train/images"
-        self.val_labels_dir = "/home/palnak/Dataset/inria/sample_train/labels"
-        self.test_images_dir = "/home/palnak/Dataset/inria/sample_train/images"
+        self.train_images_dir = ""
+        self.train_labels_dir = ""
+        self.val_images_dir = ""
+        self.val_labels_dir = ""
+        self.test_images_dir = ""
         self.normalization = "std_dev_normalization"
         self.augment = True
         self.augment_frequency = 2
@@ -20,6 +20,8 @@ class Config:
         self.augmentation = ['horizontal_flip', 'vertical_flip']
         self.multi_label = False
         self.augmentation_type = 'OneOf'
-        self.features = ["Building", "Border"]
-        self.color_code_for_features = [(0, 255, 0), (255, 0, 0)]
+        self.features = ["void", "Building", "Border"]
+        self.color_code = [(0, 0, 0), (0, 255, 0), (255, 0, 0)]
         self.epochs = 200
+        self.existing_model_weight = ""
+        self.metric = ['accuracy', 'precision', 'recall', 'f_beta_score', 'f_score', 'jaccard_coef']
