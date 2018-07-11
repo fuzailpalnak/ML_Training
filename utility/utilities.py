@@ -106,7 +106,7 @@ def create_one_hot_code_for_each_image(img, height, width, file_name, num_of_cla
     for feature_count in range(0, num_of_classes):
         img[np.where((img == [class_for_training[feature_count][1]]).all(axis=2))] = [class_for_training[feature_count][2]]
 
-    if np.amax([img>num_of_classes]):
+    if np.amax([img > num_of_classes]):
         if exists("inconsistent_pixel_values.txt"):
             remove("inconsistent_pixel_values.txt")
         file = open("inconsistent_pixel_values.txt", 'w')

@@ -1,12 +1,33 @@
 from model_utility.models import ModelInit
-from model_utility import loss_function
 import model_utility.metrics as metric
 from data_utlity.semantic_segmentation_data_gen import DataGenerator
-
-
+from data_utlity import data_normalization, data_augmentation
+from model_utility import loss_function, models
 from keras import optimizers
 
 from tensorflow.python.client import device_lib
+
+
+def run_mandatory_check(config):
+    if not hasattr(data_normalization, config.normalization):
+        print("method {} not implemented in data_utility/data_normalization.py".format(config.normalization))
+        return False
+    if not hasattr(loss_function, config.loss_function):
+        print("method {} not implemented in model_utility/loss_function.py".format(config.loss_function))
+        return False
+    if config.model_input_dimension > config.image_dimension:
+        print("Rescaling not supported model dimension should either be equal or less than image dimension"
+              .format(config.loss_function))
+        return False
+    if not hasattr(data_augmentation, config.augmentation):
+        print("method {} not implemented in data_utility/data_augmentation.py".format(config.augmentation))
+        return False
+    if not hasattr(models, config.model_name):
+        print("method {} not implemented in model_utility/models.py".format(config.model_name))
+        return False
+    if config.test_loader_batch_size > config.batch_size:
+        config.test_loader_batch_size = config.batch_size
+        return True
 
 
 def configure_training(model_name, optimizer_to_use, loss_to_use, image_dimension, classes, **kwargs):

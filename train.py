@@ -1,5 +1,5 @@
 from utility.configure import compile_model, configure_training, get_metrics, get_available_gpus_count, \
-    configure_data_gen
+    configure_data_gen, run_mandatory_check
 from utility.parallelizer import make_parallel
 from config import Config
 from model_utility.model_callbacks import get_callbacks
@@ -7,6 +7,8 @@ from model_utility.model_callbacks import get_callbacks
 
 def main():
     config = Config()
+    if not run_mandatory_check(config):
+        raise SystemExit
     model, optimizer, loss = configure_training(config.model_name, config.optimizer,
                                                 config.loss_function, config.model_input_dimension,
                                                 config.num_of_multi_label_classes, lr=1e-4)
