@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from skimage import color
 
+from utility.print_handler import colored_dual_string_print
 import sys
 from utility.utilities import create_one_hot_code_for_each_image
 import data_utlity.data_normalization as data_normalization
@@ -19,8 +20,8 @@ def perform_normalization(img_array, normalization):
 
         return img_array
     except Exception as ex:
-        print(str(ex))
-        return None
+        colored_dual_string_print("Exception", ex, "red", "yellow", attrs=['blink'])
+        sys.exit()
 
 
 def convert_to_greyscale(img):
@@ -28,8 +29,8 @@ def convert_to_greyscale(img):
         img_grey = color.rgb2gray(img) * 255
         return img_grey
     except Exception as ex:
-        print(str(ex))
-        return None
+        colored_dual_string_print("Exception", ex, "red", "yellow", attrs=['blink'])
+        sys.exit()
 
 
 def perform_clahe(img_array):
@@ -47,13 +48,9 @@ def perform_binary_label_normalization(image, height, width, file_name):
         label_image = np.array(image).reshape((height, width, 1))
         label_image = label_image[:, :] / 255
     except Exception as ex:
-        print(ex)
-        print("{}-infile".format(file_name))
-
-        print("Exception occured in perform_preprocessing_label")
-        print("please check if given dir path is for labeled images")
-        sys.tracebacklimit = None
-        raise SystemExit
+        colored_dual_string_print("Exception", ex, "red", "yellow", attrs=['blink'])
+        colored_dual_string_print("Infile", "{}".format(file_name), "red", "yellow", attrs=['blink'])
+        sys.exit()
     return label_image
 
 
@@ -62,22 +59,16 @@ def perform_normalization_multi_label(image, height, width, file_name, classes, 
         try:
             label_image = create_one_hot_code_for_each_image(image, height, width, file_name, classes, training_classes)
         except Exception as ex:
-            print(ex)
-            print("{}-infile".format(file_name))
-            print("Exception occured in perform_preprocessing_label when trying to perform one hot code")
-            print("please check given color code combination are satisfied in labelled images")
+            colored_dual_string_print("Exception", ex, "red", "yellow", attrs=['blink'])
+            colored_dual_string_print("Infile", "{}".format(file_name), "red", "yellow", attrs=['blink'])
+            sys.exit()
 
-            sys.tracebacklimit = None
-            raise SystemExit
         label_image = np.array(label_image).reshape(
             (height, width, classes))
     except Exception as ex:
-        print(ex)
-        print("{}-infile".format(file_name))
-        print("Exception occured in perform_preprocessing_label")
-        print("please check if given dir path is for labeled images")
-        sys.tracebacklimit = None
-        raise SystemExit
+        colored_dual_string_print("Exception", ex, "red", "yellow", attrs=['blink'])
+        colored_dual_string_print("Infile", "{}".format(file_name), "red", "yellow", attrs=['blink'])
+        sys.exit()
     return label_image
 
 
@@ -105,8 +96,8 @@ def perform_preprocessing_label(label_image, file_name=None, Multi_label=False, 
         return label_image
 
     except Exception as ex:
-        print(str(ex))
-        return None
+        colored_dual_string_print("Exception", ex, "red", "yellow", attrs=['blink'])
+        sys.exit()
 
 
 

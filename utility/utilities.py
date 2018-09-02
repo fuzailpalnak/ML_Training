@@ -4,6 +4,7 @@ from keras.utils import to_categorical
 import sys
 from os.path import exists
 from os import remove
+from utility.print_handler import colored_dual_string_print
 
 
 def random_crop(img, label, random_crop_size):
@@ -47,12 +48,10 @@ def get_image_label(img_path, label_path, model_input_dimension, input_image_dim
         return img, label
 
     except Exception as ex:
-        print(ex)
-        print("Exception occured in get_image_label")
-        print("{}-path to image".format(img_path))
-        print("{}-path to label".format(label_path))
-        sys.tracebacklimit = None
-        raise SystemExit
+        colored_dual_string_print("Exception", ex, "red", "yellow", attrs=['blink'])
+        colored_dual_string_print("Image Path", "{}".format(img_path), "red", "yellow", attrs=['blink'])
+        colored_dual_string_print("Label Path", "{}".format(label_path), "red", "yellow", attrs=['blink'])
+        sys.exit()
 
 
 def create_feature_dict(features, color_code_for_features, num_of_multi_label_classes):
@@ -68,11 +67,14 @@ def create_feature_dict(features, color_code_for_features, num_of_multi_label_cl
     """
     class_for_training = {}
     if len(features) != num_of_multi_label_classes:
-        print("Mismatch in features and num_of_multi_label_classes")
+        colored_dual_string_print("Mismatch", "Mismatch in features and num_of_multi_label_classes",
+                                  "red", "yellow", attrs=['blink'])
+
         return False
 
     if len(features) != len(color_code_for_features):
-        print("Mismatch in features and color_for_features")
+        colored_dual_string_print("Mismatch", "Mismatch in features and color_for_features",
+                                  "red", "yellow", attrs=['blink'])
         return False
 
     for features_count, features in enumerate(features):
@@ -97,11 +99,12 @@ def create_one_hot_code_for_each_image(img, height, width, file_name, num_of_cla
         [0,0,1,0]]
     """
     if len(img.shape) == 2:
-        print("{}-File Name".format(file_name))
-        print("Found Binary image ,Image Bands should be greater than 2")
-        print("Please check input , or MultiLabel Variable might be true in config file")
-        sys.tracebacklimit = None
-        raise SystemExit
+        colored_dual_string_print("File Name", "{}".format(file_name), "red", "yellow", attrs=['blink'])
+        colored_dual_string_print("Error", "Found Binary image ,Image Bands should be greater than 2",
+                                  "red", "yellow", attrs=['blink'])
+        colored_dual_string_print("Check", "Please check input , or MultiLabel Variable might be true in config file",
+                                  "red", "yellow", attrs=['blink'])
+        sys.exit()
 
     for feature_count in range(0, num_of_classes):
         img[np.where((img == [class_for_training[feature_count][1]]).all(axis=2))] = [class_for_training[feature_count][2]]
@@ -121,12 +124,12 @@ def create_one_hot_code_for_each_image(img, height, width, file_name, num_of_cla
                     else:
                         file.write("pixel location - x= {} y={} pixel values-{}".format(str(x), str(y), str(img[x][y]))+"\n")
         file.close()
-
-        print("{}-in file".format(file_name))
-        print("Inconsistent Pixel found please check the provided input label")
-        print("Check inconsistent_pixel_values.txt ")
-        sys.tracebacklimit = None
-        raise SystemExit
+        colored_dual_string_print("File Name", "{}".format(file_name), "red", "yellow", attrs=['blink'])
+        colored_dual_string_print("Error", "Inconsistent Pixel found please check the provided input label",
+                                  "red", "yellow", attrs=['blink'])
+        colored_dual_string_print("Check", "Check inconsistent_pixel_values.txt ",
+                                  "red", "yellow", attrs=['blink'])
+        sys.exit()
 
     img = img[:, :, :1]
     img_one_hot_coded = to_categorical(img, num_of_classes)

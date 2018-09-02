@@ -8,7 +8,7 @@ import sys
 import data_utlity.data_augmentation as data_aug
 import data_utlity.data_preprocessing as preprocessing
 
-from data_utlity.logger import create_a_logger_file, get_logger_object
+from utility.print_handler import colored_dual_string_print
 import utility.getter_setter as set_get_mean_std
 import utility.utilities as utils
 from data_utlity.data_gen_helper import get_mean_std_over_dataset, get_mean_over_dataset, generate_test_set
@@ -95,10 +95,7 @@ class DataGenerator(object):
                 raise SystemExit
 
         if self.config.num_of_multi_label_classes is None:
-
             print("Number of multilabel classes found none while intitializing  DataGenerator")
-            print("check you DataGenerator intilializer in train.py")
-
             sys.tracebacklimit = None
             raise SystemExit
 
@@ -233,8 +230,7 @@ class DataGenerator(object):
                       np.array(labels).reshape(self.config.batch_size, self.height, self.width,
                                                self.config.num_of_multi_label_classes)
             except ValueError as ex:
-                print(ex)
-                print("Exception occured in Data-Generator while trying to return")
+                colored_dual_string_print("ValueError", ex, "red", "yellow", attrs=['blink'])
                 sys.tracebacklimit = None
                 raise SystemExit
 

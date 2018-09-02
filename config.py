@@ -1,7 +1,8 @@
 class Config:
     def __init__(self):
-        self.model_name = 'unet'
+        self.model_name = 'Unet'
         self.optimizer = 'Adam'
+        self.lr = 1e-4
         self.loss_function = 'binary_crossentropy'
         self.train_images_dir = ""
         self.train_labels_dir = ""
