@@ -74,26 +74,18 @@ CNN Semantic SegmentationTraining Keras
 
 ### Adding new Architecture
 
-    # Add new architecture in model_utility/models.py
+    # Add new architecture in model_utility/NewModel.py
 
-    class ModelInit():
-        def __init__(self, ..., ...):
+    class NewModel():
+        def __call__(self, config, ...):
             ...
             ....
 
-        def existing_arch(self):
-            ...
-            ....
             return model
 
-        # new arch method
-        def new_arch(self):
-            ...
-            ....
-            return model
 
      # For calling the model during training, change the 'model_name' parameter in config.py
-     model_name = "new_arch"
+     model_name = "NewModel"
 
 ### Adding new loss function
 
