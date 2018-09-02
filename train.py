@@ -1,24 +1,24 @@
-from utility.configure import compile_model, configure_training, get_metrics, get_available_gpus_count, \
-    configure_data_gen, run_mandatory_check
+from utility.configure import configure_model_complie, configure_training, configure_metrics, get_available_gpus_count,\
+    configure_data_gen, run_mandatory_check, create_neccesary_folder
 from utility.parallelizer import make_parallel
 from config import Config
-from model_utility.model_callbacks import get_callbacks
+from train_utility.train_model_callbacks import get_callbacks
 
 
 def main():
     config = Config()
-    if not run_mandatory_check(config):
-        raise SystemExit
+    run_mandatory_check(config)
+    create_neccesary_folder()
     model, optimizer, loss = configure_training(config.model_name, config.optimizer,
-                                                config.loss_function, config.model_input_dimension,
-                                                config.num_of_multi_label_classes, lr=1e-4)
-    metrics = get_metrics(config.metric)
-    model = compile_model(model, optimizer, loss, metrics)
+                                                config.loss_function, config)
+
+    metrics = configure_metrics(config.metric)
+    model = configure_model_complie(model, optimizer, loss, metrics)
     gpu_count = get_available_gpus_count()
 
     if gpu_count > 1:
         model = make_parallel(model, gpu_count)
-        
+
     model.summary()
     if config.existing_model_weight.strip():
         model.load_weights(config.existing_model_weight)
