@@ -31,7 +31,7 @@ def run_mandatory_check(config):
         sys.exit()
 
     if not hasattr(models, config.model_name):
-        colored_dual_string_print("Sanity Check Failed", "method {} not implemented in model_utility/models.py"
+        colored_dual_string_print("Sanity Check Failed", "method {} not implemented in models"
                                   .format(config.model_name),
                                   "red", "yellow", attrs=['bold'])
         sys.exit()
